@@ -448,9 +448,9 @@ if uploaded_file:
 
         def objective_var(trial):
             params = {
-                "n_estimators": trial.suggest_int("n_estimators", 300, 800),
+                "n_estimators": trial.suggest_int("n_estimators", 300, 400),
                 "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
-                "max_depth": trial.suggest_int("max_depth", 3, 12),
+                "max_depth": trial.suggest_int("max_depth", 3, 8),
                 "subsample": trial.suggest_float("subsample", 0.6, 1.0),
                 "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
                 "random_state": 42,
@@ -461,16 +461,16 @@ if uploaded_file:
             preds = model.predict(X_test_var)
             return mean_absolute_error(y_test_var, preds)
 
-        st.write("Sedang melakukan tuning hyperparameter (TX)...")
-        study_tx = optuna.create_study(direction="minimize")
-        study_tx.optimize(objective_tx, n_trials=12, show_progress_bar=True)
+        #st.write("Sedang melakukan tuning hyperparameter (TX)...")
+        #study_tx = optuna.create_study(direction="minimize")
+        #study_tx.optimize(objective_tx, n_trials=12, show_progress_bar=True)
 
-        st.write("Sedang melakukan tuning hyperparameter (VAR)...")
-        study_var = optuna.create_study(direction="minimize")
-        study_var.optimize(objective_var, n_trials=12, show_progress_bar=True)
+        #st.write("Sedang melakukan tuning hyperparameter (VAR)...")
+        #study_var = optuna.create_study(direction="minimize")
+        #study_var.optimize(objective_var, n_trials=12, show_progress_bar=True)
 
-        best_params_tx = study_tx.best_params
-        best_params_var = study_var.best_params
+        #best_params_tx = study_tx.best_params
+        #best_params_var = study_var.best_params
 
         #pake ini kalo mau tuning
         use_tuned = False  
@@ -598,6 +598,7 @@ if uploaded_file:
                 use_container_width=True
             )
             st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
