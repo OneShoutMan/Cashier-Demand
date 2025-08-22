@@ -473,7 +473,7 @@ if uploaded_file:
         best_params_var = study_var.best_params
 
         #pake ini kalo mau tuning
-        use_tuned = True  
+        use_tuned = False  
 
         if use_tuned:
             st.write("Menggunakan parameter hasil tuning Optuna")
@@ -598,3 +598,4 @@ if uploaded_file:
                 use_container_width=True
             )
             st.markdown('</div>', unsafe_allow_html=True)
+
