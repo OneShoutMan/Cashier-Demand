@@ -463,11 +463,11 @@ if uploaded_file:
 
         st.write("Sedang melakukan tuning hyperparameter (TX)...")
         study_tx = optuna.create_study(direction="minimize")
-        study_tx.optimize(objective_tx, n_trials=30, show_progress_bar=True)
+        study_tx.optimize(objective_tx, n_trials=12, show_progress_bar=True)
 
         st.write("Sedang melakukan tuning hyperparameter (VAR)...")
         study_var = optuna.create_study(direction="minimize")
-        study_var.optimize(objective_var, n_trials=30, show_progress_bar=True)
+        study_var.optimize(objective_var, n_trials=12, show_progress_bar=True)
 
         best_params_tx = study_tx.best_params
         best_params_var = study_var.best_params
@@ -598,4 +598,5 @@ if uploaded_file:
                 use_container_width=True
             )
             st.markdown('</div>', unsafe_allow_html=True)
+
 
