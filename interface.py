@@ -482,11 +482,11 @@ if uploaded_file:
         else:
             st.write("Menggunakan parameter default")
             xgb_tx = XGBRegressor(
-                n_estimators=500, learning_rate=0.05, max_depth=7,
+                n_estimators=200, learning_rate=0.05, max_depth=7,
                 subsample=0.9, colsample_bytree=0.9, random_state=42
             )
             xgb_var = XGBRegressor(
-                n_estimators=500, learning_rate=0.05, max_depth=7,
+                n_estimators=200, learning_rate=0.05, max_depth=7,
                 subsample=0.9, colsample_bytree=0.9, random_state=42
             )
 
@@ -598,5 +598,6 @@ if uploaded_file:
                 use_container_width=True
             )
             st.markdown('</div>', unsafe_allow_html=True)
+
 
 
