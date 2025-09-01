@@ -402,6 +402,11 @@ if uploaded_file:
             'Var': 'sum'
         }).reset_index()
 
+        min_days = 180 
+        if len(data_harian) < min_days:
+            st.error("Data kurang untuk forecast, silahkan masukan data 1 semester")
+            st.stop()
+
         def create_features(df,col,n_lags=14):
             df_feat = df.copy()
             df_feat['dayofweek'] = df_feat['tanggal'].dt.dayofweek
@@ -448,9 +453,9 @@ if uploaded_file:
 
         def objective_var(trial):
             params = {
-                "n_estimators": trial.suggest_int("n_estimators", 300, 400),
+                "n_estimators": trial.suggest_int("n_estimators", 300, 800),
                 "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
-                "max_depth": trial.suggest_int("max_depth", 3, 8),
+                "max_depth": trial.suggest_int("max_depth", 3, 12),
                 "subsample": trial.suggest_float("subsample", 0.6, 1.0),
                 "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
                 "random_state": 42,
@@ -461,19 +466,19 @@ if uploaded_file:
             preds = model.predict(X_test_var)
             return mean_absolute_error(y_test_var, preds)
 
-        #st.write("Sedang melakukan tuning hyperparameter (TX)...")
-        #study_tx = optuna.create_study(direction="minimize")
-        #study_tx.optimize(objective_tx, n_trials=12, show_progress_bar=True)
+        st.write("Sedang melakukan tuning hyperparameter (TX)...")
+        study_tx = optuna.create_study(direction="minimize")
+        study_tx.optimize(objective_tx, n_trials=30, show_progress_bar=True)
 
-        #st.write("Sedang melakukan tuning hyperparameter (VAR)...")
-        #study_var = optuna.create_study(direction="minimize")
-        #study_var.optimize(objective_var, n_trials=12, show_progress_bar=True)
+        st.write("Sedang melakukan tuning hyperparameter (VAR)...")
+        study_var = optuna.create_study(direction="minimize")
+        study_var.optimize(objective_var, n_trials=30, show_progress_bar=True)
 
-        #best_params_tx = study_tx.best_params
-        #best_params_var = study_var.best_params
+        best_params_tx = study_tx.best_params
+        best_params_var = study_var.best_params
 
         #pake ini kalo mau tuning
-        use_tuned = False  
+        use_tuned = True  
 
         if use_tuned:
             st.write("Menggunakan parameter hasil tuning Optuna")
@@ -482,11 +487,11 @@ if uploaded_file:
         else:
             st.write("Menggunakan parameter default")
             xgb_tx = XGBRegressor(
-                n_estimators=200, learning_rate=0.05, max_depth=7,
+                n_estimators=500, learning_rate=0.05, max_depth=7,
                 subsample=0.9, colsample_bytree=0.9, random_state=42
             )
             xgb_var = XGBRegressor(
-                n_estimators=200, learning_rate=0.05, max_depth=7,
+                n_estimators=500, learning_rate=0.05, max_depth=7,
                 subsample=0.9, colsample_bytree=0.9, random_state=42
             )
 
@@ -513,7 +518,7 @@ if uploaded_file:
         forecast_dates = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=forecast_horizon, freq='D')
 
         def forecast_future(df,col,model,horizon = 30):
-            hist = df.copy()
+            hist = df.copy() 
             preds = []
             for i in range(horizon):
                 feat = create_features(hist[['tanggal',col]], col).iloc[-1:].drop(columns=['tanggal',col])
@@ -598,7 +603,3 @@ if uploaded_file:
                 use_container_width=True
             )
             st.markdown('</div>', unsafe_allow_html=True)
-
-
-
-
